@@ -177,7 +177,7 @@ export function ThemeIcon({ preference, className }: ThemeIconProps) {
           y="19"
           textAnchor="middle"
           fontSize="22"
-          fontWeight="700"
+          fontWeight="500"
           fill="currentColor"
         >
           A

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { subscribeLog, pushLog } from "./data/cloudSync";
+import { removeDay, subscribeLog, writeDay } from "./data/cloudSync";
 import { loadFoodLog, saveFoodLog } from "./data/logStorage";
 import type { DayLog, FoodEntry, FoodLog } from "./types";
 
-/** Debounce window before a local change is pushed to the cloud. */
+/** Debounce window before dirty days are flushed to the cloud. */
 const PUSH_DELAY_MS = 600;
 
 /** New-entry payload without the generated id/timestamp fields. */
@@ -50,6 +50,29 @@ function getStorage(): Storage | null {
   }
 }
 
+/**
+ * Take a remote snapshot as the base, then overlay only the days the user has
+ * edited locally but not yet flushed (`dirty`). Un-edited days always fall back
+ * to the remote value, so a stale local cache can never resurrect or clobber
+ * cloud data — only days actively changed this session survive.
+ */
+export function mergeRemoteWithDirty(
+  remote: FoodLog,
+  local: FoodLog,
+  dirty: Iterable<string>,
+): FoodLog {
+  const merged: FoodLog = { ...remote };
+  for (const date of dirty) {
+    const entries = local[date];
+    if (entries && entries.length > 0) {
+      merged[date] = entries;
+    } else {
+      delete merged[date];
+    }
+  }
+  return merged;
+}
+
 export function useFoodLog(uid: string) {
   // Seed from the local cache for an instant, offline-capable first paint.
   const [log, setLog] = useState<FoodLog>(() => {
@@ -57,11 +80,15 @@ export function useFoodLog(uid: string) {
     return storage ? loadFoodLog(storage) : {};
   });
 
-  // True only for the setLog triggered by a remote snapshot, so the push
-  // effect can skip re-uploading data that just came down from the cloud.
-  const applyingRemote = useRef(false);
-  // Becomes true after the first remote snapshot. Gates pushes so the local
-  // cache can never clobber newer cloud data before we have loaded it.
+  // Always-current snapshot of `log` for async flushes (avoids stale closures).
+  const logRef = useRef(log);
+  logRef.current = log;
+
+  // Days changed locally but not yet confirmed written to the cloud. Pushes are
+  // driven by this set, so remote snapshots never echo back as writes.
+  const dirty = useRef<Set<string>>(new Set());
+  // Becomes true after the first remote snapshot. Gates flushes so the local
+  // cache can never clobber cloud data before we have loaded it.
   const hydrated = useRef(false);
 
   // Mirror every change into the local cache.
@@ -72,59 +99,92 @@ export function useFoodLog(uid: string) {
     }
   }, [log]);
 
-  // Subscribe to the signed-in user's cloud log. Remote is the source of
-  // truth; its snapshots replace local state without echoing back.
+  // Flush each dirty day to its own path. Failures keep the day dirty so it is
+  // retried on the next flush (e.g. after the connection returns).
+  const flush = useCallback(async () => {
+    if (!hydrated.current) {
+      return;
+    }
+    const dates = [...dirty.current];
+    await Promise.all(
+      dates.map(async (date) => {
+        const entries = logRef.current[date];
+        try {
+          if (entries && entries.length > 0) {
+            await writeDay(uid, date, entries);
+          } else {
+            await removeDay(uid, date);
+          }
+          dirty.current.delete(date);
+        } catch {
+          // Keep the day dirty; a later flush retries it.
+        }
+      }),
+    );
+  }, [uid]);
+
+  // Subscribe to the signed-in user's cloud log. Remote is the base; locally
+  // edited (dirty) days are overlaid so un-flushed edits are never lost.
   useEffect(() => {
     hydrated.current = false;
+    dirty.current.clear();
     const unsubscribe = subscribeLog(uid, (remote) => {
-      applyingRemote.current = true;
       hydrated.current = true;
-      setLog(remote);
+      setLog((local) => mergeRemoteWithDirty(remote, local, dirty.current));
     });
     return unsubscribe;
   }, [uid]);
 
-  // Push local edits to the cloud (debounced). Skips remote-originated
-  // updates and waits until the initial snapshot has hydrated.
+  // Debounced flush of any pending dirty days, once hydrated.
   useEffect(() => {
-    if (applyingRemote.current) {
-      applyingRemote.current = false;
-      return;
-    }
-    if (!hydrated.current) {
+    if (!hydrated.current || dirty.current.size === 0) {
       return;
     }
     const timer = setTimeout(() => {
-      void pushLog(uid, log);
+      void flush();
     }, PUSH_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [log, uid]);
+  }, [log, flush]);
 
-  const addEntry = useCallback((date: string, draft: EntryDraft) => {
-    const entry = buildEntry(draft);
-    setLog((current) => {
-      const existing = current[date] ?? [];
-      return { ...current, [date]: [...existing, entry] };
-    });
+  const markDirty = useCallback((...dates: string[]) => {
+    for (const date of dates) {
+      dirty.current.add(date);
+    }
   }, []);
 
-  const deleteEntry = useCallback((date: string, entryId: string) => {
-    setLog((current) => {
-      const existing = current[date];
-      if (!existing) {
-        return current;
-      }
+  const addEntry = useCallback(
+    (date: string, draft: EntryDraft) => {
+      const entry = buildEntry(draft);
+      markDirty(date);
+      setLog((current) => {
+        const existing = current[date] ?? [];
+        return { ...current, [date]: [...existing, entry] };
+      });
+    },
+    [markDirty],
+  );
 
-      const remaining = existing.filter((entry) => entry.id !== entryId);
-      const next = { ...current };
-      if (remaining.length > 0) {
-        next[date] = remaining;
-      } else {
-        delete next[date];
-      }
-      return next;
-    });
-  }, []);
+  const deleteEntry = useCallback(
+    (date: string, entryId: string) => {
+      markDirty(date);
+      setLog((current) => {
+        const existing = current[date];
+        if (!existing) {
+          return current;
+        }
+
+        const remaining = existing.filter((entry) => entry.id !== entryId);
+        const next = { ...current };
+        if (remaining.length > 0) {
+          next[date] = remaining;
+        } else {
+          delete next[date];
+        }
+        return next;
+      });
+    },
+    [markDirty],
+  );
 
   // Edit an entry in place, preserving id/createdAt. Moving it to a different
   // date removes it from the original day and appends to the target day.
@@ -135,6 +195,7 @@ export function useFoodLog(uid: string) {
       nextDate: string,
       draft: EntryDraft,
     ) => {
+      markDirty(originalDate, nextDate);
       setLog((current) => {
         const source = current[originalDate];
         const target = source?.find((entry) => entry.id === entryId);
@@ -167,13 +228,17 @@ export function useFoodLog(uid: string) {
         return next;
       });
     },
-    [],
+    [markDirty],
   );
 
   // Merge imported days, overriding any day that already exists.
-  const importDays = useCallback((incoming: FoodLog) => {
-    setLog((current) => ({ ...current, ...incoming }));
-  }, []);
+  const importDays = useCallback(
+    (incoming: FoodLog) => {
+      markDirty(...Object.keys(incoming));
+      setLog((current) => ({ ...current, ...incoming }));
+    },
+    [markDirty],
+  );
 
   // Days newest-first; entries within a day oldest-first (as logged).
   const days = useMemo<DayLog[]>(() => {

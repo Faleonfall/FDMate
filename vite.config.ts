@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     host: frontendHost,
     port: frontendDevPort,
-    // Don't fail when 3000 is taken — fall through to the next free port.
+    // Don't fail when 3000 is taken; fall through to the next free port.
     strictPort: false,
     // Accept tunnel hosts (cloudflared/ngrok) in dev.
     allowedHosts: [".trycloudflare.com", ".ngrok-free.app", ".ngrok.app"],

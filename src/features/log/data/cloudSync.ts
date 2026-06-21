@@ -1,10 +1,14 @@
-import { onValue, ref, set } from "firebase/database";
+import { onValue, ref, remove, set } from "firebase/database";
 
 import { db } from "../../../lib/firebase";
-import type { FoodLog } from "../types";
+import type { FoodEntry, FoodLog } from "../types";
 
 function logRef(uid: string) {
   return ref(db, `users/${uid}/log`);
+}
+
+function dayRef(uid: string, date: string) {
+  return ref(db, `users/${uid}/log/${date}`);
 }
 
 /** Subscribe to the remote log; fires now and on every remote change. */
@@ -17,7 +21,16 @@ export function subscribeLog(
   });
 }
 
-/** Overwrite the remote log with the full local blob. */
-export function pushLog(uid: string, log: FoodLog): Promise<void> {
-  return set(logRef(uid), log);
+/** Write a single day's entries to the cloud (one path, not the whole blob). */
+export function writeDay(
+  uid: string,
+  date: string,
+  entries: FoodEntry[],
+): Promise<void> {
+  return set(dayRef(uid, date), entries);
+}
+
+/** Remove a single day from the cloud. */
+export function removeDay(uid: string, date: string): Promise<void> {
+  return remove(dayRef(uid, date));
 }

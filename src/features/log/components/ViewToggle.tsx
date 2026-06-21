@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 export type ViewMode = "daily" | "weekly" | "monthly";
 
 const OPTIONS: { value: ViewMode; label: string }[] = [
@@ -12,8 +14,18 @@ type ViewToggleProps = {
 };
 
 export function ViewToggle({ value, onChange }: ViewToggleProps) {
+  const activeIndex = Math.max(
+    0,
+    OPTIONS.findIndex((option) => option.value === value),
+  );
+
   return (
-    <div className="view-toggle" role="group" aria-label="View mode">
+    <div
+      className="view-toggle"
+      role="group"
+      aria-label="View mode"
+      style={{ "--active-index": activeIndex } as CSSProperties}
+    >
       {OPTIONS.map((option) => (
         <button
           key={option.value}

@@ -1,5 +1,6 @@
 @use "../foundation/tokens" as *;
 @use "../foundation/theme-mixins" as *;
+@use "../foundation/breakpoints" as *;
 
 .today-summary {
   @include glass-panel;
@@ -19,8 +20,12 @@
 .today-summary-value {
   font-family: $font-mono;
   font-size: 1.6rem;
-  font-weight: 700;
+  font-weight: 600;
   color: $color-accent;
+
+  @include phone-down {
+    font-size: 1.3rem;
+  }
 }
 
 .today-summary-unit {
@@ -35,4 +40,8 @@
   font-weight: 400;
   color: $color-text-soft;
   margin: 0 0.4rem;
+
+  @include phone-down {
+    font-size: 1.3rem;
+  }
 }

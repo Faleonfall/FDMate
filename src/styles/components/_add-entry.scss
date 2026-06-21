@@ -21,11 +21,12 @@
 .modal {
   @include glass-panel;
   background-image: $gradient-popover;
-  border-radius: 1rem;
+  border-radius: 0.6rem;
   width: 100%;
   max-width: 420px;
   max-height: calc(100dvh - 2.5rem);
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -34,7 +35,7 @@
   @include phone-down {
     max-width: none;
     max-height: 92dvh;
-    border-radius: 1rem 1rem 0 0;
+    border-radius: 0.6rem 0.6rem 0 0;
     padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
   }
 }
@@ -49,7 +50,7 @@
 .modal-title {
   font-family: $font-display;
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .entry-form {
@@ -110,32 +111,228 @@
   gap: 0.75rem;
 }
 
+/* --- fluid morph: liquid calorie-input fields ---------------------------- */
+/* --p (0 = total/one wide pill, 1 = per100g/two halves) and --wob are driven
+   per frame from JS. Registered as <number> so calc()/clamp() interpolate. */
+@property --p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --wob {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.liquid-fields {
+  --p: 0;
+  --wob: 0;
+  --gap: 0.75rem;
+  // one input row: line 1.5rem + padding 0.55rem*2 + border 2px.
+  --row: calc(1.5rem + 1.1rem + 2px);
+  position: relative;
+  // label row (~1.125rem) + field gap (0.3rem) + input row.
+  height: calc(1.125rem + 0.3rem + var(--row));
+}
+
+.liquid-goo-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+// Decorative liquid: a single opaque body behind the inputs, holds NO text.
+// One layer keeps the surface opacity constant (no flicker). The goo filter
+// is applied only while morphing; its blur (stdDeviation) is ramped from 0
+// in JS, so toggling the filter on/off is seamless and the corners round
+// smoothly into the neck and back instead of snapping.
+.liquid-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--row);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.liquid-fields.is-morphing .liquid-body {
+  filter: url(#fdmate-goo);
+  will-change: filter;
+}
+
+.blob {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 0.6rem;
+}
+
+// blob-a = left/merged mass: full width at p=0 -> half at p=1.
+.blob-a {
+  left: 0;
+  width: calc(100% - var(--p) * ((100% + var(--gap)) / 2));
+  transform: translateY(calc(var(--wob) * 1px));
+}
+
+// blob-b = right mass: 0 width at p=0 -> half at p=1. Opposite-phase wobble.
+.blob-b {
+  right: 0;
+  width: calc(var(--p) * (100% - var(--gap)) / 2);
+  transform: translateY(calc(var(--wob) * -1px));
+}
+
+// Blobs MUST be near-opaque: the goo feColorMatrix thresholds alpha
+// (alpha*18-7, cuts below ~0.39), so translucent token fills get erased.
+// Build an opaque, theme-aware pill from solid overlay nudged toward text
+// so it reads as a field surface in BOTH light and dark.
+.blob {
+  background: color-mix(in srgb, $color-surface-overlay 94%, $color-text 6%);
+}
+
+// Real inputs: absolutely stacked, transparent so the liquid is the surface.
+.liquid-field {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+
+  .field-input {
+    background: transparent;
+    border-color: transparent;
+
+    &:focus {
+      @include focus-ring;
+    }
+  }
+}
+
+.liquid-field--calories {
+  left: 0;
+  width: 100%;
+}
+
+.liquid-field--per100g {
+  left: 0;
+  width: calc((100% - var(--gap)) / 2);
+}
+
+.liquid-field--grams {
+  right: 0;
+  width: calc((100% - var(--gap)) / 2);
+}
+
+// Two fade strategies, split so each reads well:
+// - Labels (different text) blink with a gap so they never overlap into
+//   garble mid-morph: calories label gone by p=0.4, pair labels appear at 0.6.
+// - Inputs (share the "0" at the same left edge) cross-fade with overlap so
+//   the "0" stays put instead of blinking.
+.liquid-field--calories .field-label {
+  opacity: clamp(0, (0.4 - var(--p)) / 0.22, 1);
+}
+.liquid-field--per100g .field-label,
+.liquid-field--grams .field-label {
+  opacity: clamp(0, (var(--p) - 0.6) / 0.22, 1);
+}
+
+// The calories "0" and the per100g "0" sit at the SAME left edge, so hand
+// them off over a tiny window (a near-instant swap of one identical glyph)
+// instead of a long blend. Two overlapping translucent "0"s would composite
+// to a different alpha and read as a color shift; this keeps the left "0"
+// one steady glyph.
+.liquid-field--calories .field-input {
+  opacity: clamp(0, (0.53 - var(--p)) / 0.06, 1);
+}
+.liquid-field--per100g .field-input {
+  opacity: clamp(0, (var(--p) - 0.47) / 0.06, 1);
+}
+// The grams "0" is genuinely new on the right, so fade it in smoothly.
+.liquid-field--grams .field-input {
+  opacity: clamp(0, (var(--p) - 0.4) / 0.32, 1);
+}
+
+// Pointer-events gated by mode (robust, independent of mid-flight --p).
+.liquid-fields[data-mode="total"] {
+  .liquid-field--per100g,
+  .liquid-field--grams {
+    pointer-events: none;
+  }
+  .liquid-field--calories {
+    pointer-events: auto;
+  }
+}
+
+.liquid-fields[data-mode="per100g"] {
+  .liquid-field--calories {
+    pointer-events: none;
+  }
+  .liquid-field--per100g,
+  .liquid-field--grams {
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-fields {
+    --wob: 0;
+  }
+  .liquid-fields .liquid-body {
+    will-change: auto;
+  }
+}
+
 .mode-toggle {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.4rem;
-  padding: 0.25rem;
-  border-radius: 0.7rem;
+  padding: 0.15rem;
+  border-radius: 0.6rem;
   @include interactive-surface;
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 0.15rem;
+    bottom: 0.15rem;
+    left: 0.15rem;
+    width: calc((100% - 0.3rem) / 2);
+    border-radius: 0.5rem;
+    background-image: $gradient-accent;
+    transform: translateX(calc(var(--active-index, 0) * 100%));
+    transition: transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
 .mode-toggle-option {
+  position: relative;
+  z-index: 1;
   font: inherit;
   cursor: pointer;
   border: none;
   background: transparent;
   color: $color-text-soft;
   border-radius: 0.5rem;
-  padding: 0.45rem 0.5rem;
+  padding: 0.4rem 0.5rem;
   font-weight: 600;
+  transition: color 200ms ease;
 
   &[data-active="true"] {
     color: $color-on-accent;
-    background-image: $gradient-accent;
   }
 
   &:focus-visible {
     @include focus-ring;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-toggle::before {
+    transition: none;
   }
 }
 

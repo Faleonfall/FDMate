@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 
 import { CloseIcon } from "../../../ui/AppIcons";
 import { evalExpression } from "../lib/calcExpression";
@@ -52,6 +53,121 @@ export function AddEntryForm({
     editing?.mode === "per100g" ? String(editing.grams) : "",
   );
   const [error, setError] = useState<string | null>(null);
+
+  // --- fluid morph: refs + spring state ---
+  const fieldsRef = useRef<HTMLDivElement | null>(null);
+  const blurRef = useRef<SVGFEGaussianBlurElement | null>(null);
+  const springRef = useRef<{ p: number; v: number } | null>(null);
+  const targetRef = useRef<number>(mode === "per100g" ? 1 : 0);
+  const rafRef = useRef<number | null>(null);
+  const reduceMotion =
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Initialise --p once so the first paint matches the current mode (no flash).
+  useEffect(() => {
+    const el = fieldsRef.current;
+    if (!el) {
+      return;
+    }
+    const initial = mode === "per100g" ? 1 : 0;
+    springRef.current = { p: initial, v: 0 };
+    el.style.setProperty("--p", String(initial));
+    el.style.setProperty("--wob", "0");
+    if (blurRef.current) {
+      blurRef.current.setAttribute("stdDeviation", "0");
+    }
+    // run once on mount; mode read intentionally only for the first frame
+  }, []);
+
+  // Drive the spring toward the new target whenever mode changes.
+  useEffect(() => {
+    const el = fieldsRef.current;
+    if (!el) {
+      return;
+    }
+    const target = mode === "per100g" ? 1 : 0;
+    targetRef.current = target;
+
+    if (reduceMotion) {
+      springRef.current = { p: target, v: 0 };
+      el.style.setProperty("--p", String(target));
+      el.style.setProperty("--wob", "0");
+      if (blurRef.current) {
+        blurRef.current.setAttribute("stdDeviation", "0");
+      }
+      el.classList.remove("is-morphing");
+      return;
+    }
+
+    const STIFF = 170;
+    const DAMP = 17;
+    const start = performance.now();
+    let last = start;
+    el.classList.add("is-morphing");
+
+    const tick = (now: number) => {
+      const s = springRef.current;
+      if (!s) {
+        rafRef.current = null;
+        return;
+      }
+      let dt = (now - last) / 1000;
+      last = now;
+      if (dt > 0.032) {
+        dt = 0.032; // clamp large frame gaps (tab refocus etc.)
+      }
+
+      const tgt = targetRef.current;
+      const accel = STIFF * (tgt - s.p) - DAMP * s.v;
+      s.v += accel * dt;
+      s.p += s.v * dt;
+
+      const settleAmt = Math.min(1, Math.abs(s.v) + Math.abs(tgt - s.p) * 4);
+      const wob = Math.sin((now - start) / 90) * 0.5 * settleAmt;
+      // Blur peaks mid-morph and is ~0 at both ends, so the single opaque
+      // body keeps constant opacity (no surface flicker) while the corners
+      // round smoothly into the neck and back. Starting/ending at blur 0
+      // means toggling the filter on/off is visually seamless.
+      const pc = Math.min(1, Math.max(0, s.p));
+      const blur = 6 * Math.sin(Math.PI * pc);
+      if (blurRef.current) {
+        blurRef.current.setAttribute("stdDeviation", blur.toFixed(2));
+      }
+
+      el.style.setProperty("--p", s.p.toFixed(4));
+      el.style.setProperty("--wob", wob.toFixed(3));
+
+      if (Math.abs(s.v) < 0.001 && Math.abs(tgt - s.p) < 0.001) {
+        s.p = tgt;
+        s.v = 0;
+        el.style.setProperty("--p", String(tgt));
+        el.style.setProperty("--wob", "0");
+        if (blurRef.current) {
+          blurRef.current.setAttribute("stdDeviation", "0");
+        }
+        el.classList.remove("is-morphing");
+        rafRef.current = null;
+        return;
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    // Retarget the existing spring if one is already running; never stack loops.
+    if (rafRef.current == null) {
+      last = performance.now();
+      rafRef.current = requestAnimationFrame(tick);
+    }
+
+    return () => {
+      if (rafRef.current != null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      el.classList.remove("is-morphing");
+    };
+  }, [mode, reduceMotion]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -157,8 +273,14 @@ export function AddEntryForm({
           </div>
 
           <div className="field">
-            <span className="field-label">How are calories entered?</span>
-            <div className="mode-toggle" role="group">
+            <span className="field-label">Calorie input</span>
+            <div
+              className="mode-toggle"
+              role="group"
+              style={
+                { "--active-index": mode === "total" ? 1 : 0 } as CSSProperties
+              }
+            >
               <button
                 type="button"
                 className="mode-toggle-option"
@@ -178,8 +300,37 @@ export function AddEntryForm({
             </div>
           </div>
 
-          {mode === "total" ? (
-            <div className="field">
+          {/* Fluid morph: all three inputs always mounted so the DOM shape
+              never changes. Decorative goo blobs sit behind transparent
+              inputs and form a pinching liquid neck as the spring drives --p
+              (0 = total, one wide pill; 1 = per100g, two half pills). */}
+          <div className="liquid-fields" ref={fieldsRef} data-mode={mode}>
+            <svg className="liquid-goo-defs" aria-hidden="true" focusable="false">
+              <defs>
+                <filter id="fdmate-goo" colorInterpolationFilters="sRGB">
+                  <feGaussianBlur
+                    ref={blurRef}
+                    in="SourceGraphic"
+                    stdDeviation="0"
+                    result="blur"
+                  />
+                  <feColorMatrix
+                    in="blur"
+                    mode="matrix"
+                    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+                    result="goo"
+                  />
+                  <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+                </filter>
+              </defs>
+            </svg>
+
+            <div className="liquid-body" aria-hidden="true">
+              <span className="blob blob-a" />
+              <span className="blob blob-b" />
+            </div>
+
+            <div className="liquid-field liquid-field--calories">
               <label className="field-label" htmlFor="entry-calories">
                 Calories eaten (kcal)
               </label>
@@ -191,42 +342,47 @@ export function AddEntryForm({
                 placeholder="0"
                 value={calories}
                 onChange={(event) => setCalories(event.target.value)}
+                tabIndex={mode === "total" ? 0 : -1}
+                aria-hidden={mode === "total" ? undefined : true}
               />
             </div>
-          ) : (
-            <div className="field-row">
-              <div className="field">
-                <label className="field-label" htmlFor="entry-per100g">
-                  kcal / 100 g
-                </label>
-                <input
-                  id="entry-per100g"
-                  className="field-input"
-                  type="number"
-                  inputMode="numeric"
-                  min="0"
-                  placeholder="0"
-                  value={per100g}
-                  onChange={(event) => setPer100g(event.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label className="field-label" htmlFor="entry-grams">
-                  Grams eaten
-                </label>
-                <input
-                  id="entry-grams"
-                  className="field-input"
-                  type="number"
-                  inputMode="numeric"
-                  min="0"
-                  placeholder="0"
-                  value={grams}
-                  onChange={(event) => setGrams(event.target.value)}
-                />
-              </div>
+
+            <div className="liquid-field liquid-field--per100g">
+              <label className="field-label" htmlFor="entry-per100g">
+                kcal / 100 g
+              </label>
+              <input
+                id="entry-per100g"
+                className="field-input"
+                type="number"
+                inputMode="numeric"
+                min="0"
+                placeholder="0"
+                value={per100g}
+                onChange={(event) => setPer100g(event.target.value)}
+                tabIndex={mode === "per100g" ? 0 : -1}
+                aria-hidden={mode === "per100g" ? undefined : true}
+              />
             </div>
-          )}
+
+            <div className="liquid-field liquid-field--grams">
+              <label className="field-label" htmlFor="entry-grams">
+                Grams eaten
+              </label>
+              <input
+                id="entry-grams"
+                className="field-input"
+                type="number"
+                inputMode="numeric"
+                min="0"
+                placeholder="0"
+                value={grams}
+                onChange={(event) => setGrams(event.target.value)}
+                tabIndex={mode === "per100g" ? 0 : -1}
+                aria-hidden={mode === "per100g" ? undefined : true}
+              />
+            </div>
+          </div>
 
           {error ? <p className="entry-form-error">{error}</p> : null}
 
