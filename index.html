@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FDMate is a fast, lightweight web app for manual calorie tracking — log food per day by total calories or calories per 100g."
+    />
+    <meta name="application-name" content="FDMate" />
+    <meta name="apple-mobile-web-app-title" content="FDMate" />
+    <meta name="theme-color" content="#10151d" />
+    <style>
+      html,
+      body {
+        background: #10151d;
+      }
+
+      html {
+        color-scheme: dark;
+      }
+
+      html[data-theme="light"],
+      html[data-theme="light"] body {
+        background: #eef5ec;
+      }
+
+      html[data-theme="light"] {
+        color-scheme: light;
+      }
+    </style>
+    <title>FDMate</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/Main.tsx"></script>
+  </body>
+</html>

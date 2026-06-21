@@ -1,0 +1,49 @@
+// Two bundled families (self-hosted) so type is identical across engines:
+// Inter for all text/headings, IBM Plex Mono for numbers.
+$font-sans: "Inter Variable", system-ui, -apple-system, sans-serif;
+$font-display: $font-sans;
+$font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+$color-background: var(--color-background);
+$color-background-end: var(--color-background-end);
+$color-text: var(--color-text);
+$color-text-soft: var(--color-text-soft);
+$color-text-list: var(--color-text-list);
+$color-accent: var(--color-accent);
+$color-accent-strong: var(--color-accent-strong);
+$color-on-accent: var(--color-on-accent);
+$color-panel-background: var(--color-panel-background);
+$color-panel-border: var(--color-panel-border);
+$color-card-border: var(--color-card-border);
+$color-card-background: var(--color-card-background);
+$color-success: var(--color-success);
+$color-success-border: var(--color-success-border);
+$color-error: var(--color-error);
+$color-error-border: var(--color-error-border);
+$color-pending: var(--color-pending);
+$color-pending-border: var(--color-pending-border);
+$color-panel-glow: var(--color-panel-glow);
+$color-surface-subtle: var(--color-surface-subtle);
+$color-surface-muted: var(--color-surface-muted);
+$color-surface-hover: var(--color-surface-hover);
+$color-surface-overlay: var(--color-surface-overlay);
+$color-border-subtle: var(--color-border-subtle);
+$color-divider: var(--color-divider);
+$color-danger-text: var(--color-danger-text);
+$color-focus-ring: var(--color-focus-ring);
+$color-accent-border-strong: var(--color-accent-border-strong);
+$color-accent-text-muted: var(--color-accent-text-muted);
+$color-mask-solid: var(--color-mask-solid);
+
+$gradient-app-background: var(--gradient-app-background);
+$gradient-card: var(--gradient-card);
+$gradient-accent: var(--gradient-accent);
+$gradient-popover: var(--gradient-popover);
+
+$shadow-panel: var(--shadow-panel);
+$shadow-button: var(--shadow-button);
+$shadow-button-hover: var(--shadow-button-hover);
+$shadow-button-active: var(--shadow-button-active);
+$shadow-button-disabled: var(--shadow-button-disabled);
+$shadow-card-hover: var(--shadow-card-hover);
+$shadow-accent-glow: var(--shadow-accent-glow);

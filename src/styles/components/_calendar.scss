@@ -1,0 +1,89 @@
+@use "../foundation/tokens" as *;
+@use "../foundation/theme-mixins" as *;
+
+.calendar {
+  border: 1px solid $color-card-border;
+  background-image: $gradient-card;
+  border-radius: 1rem;
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $color-text-soft;
+}
+
+.calendar-cell {
+  position: relative;
+  min-height: 2.6rem;
+  padding: 0.3rem 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+  background: $color-surface-subtle;
+  color: $color-text;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &[data-has-entries="true"] {
+    background: $color-surface-muted;
+    border-color: $color-border-subtle;
+    font-weight: 700;
+  }
+
+  &[data-has-entries="true"]:hover {
+    background: $color-surface-hover;
+    box-shadow: $shadow-accent-glow;
+  }
+
+  &:disabled {
+    cursor: default;
+    color: $color-text-soft;
+    opacity: 0.55;
+  }
+
+  &[data-outside="true"] {
+    opacity: 0.35;
+  }
+
+  &[data-today="true"] {
+    border-color: $color-accent-border-strong;
+    box-shadow: $shadow-accent-glow;
+    color: $color-accent;
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.calendar-cell-day {
+  font-size: 0.85rem;
+}
+
+.calendar-cell-dot {
+  position: absolute;
+  bottom: 0.32rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  background: $color-accent;
+}

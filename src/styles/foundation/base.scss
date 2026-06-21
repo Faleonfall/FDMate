@@ -1,0 +1,76 @@
+@use "./tokens" as *;
+
+:root {
+  font-family: $font-sans;
+  color: $color-text;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+$theme-transition-duration: 250ms;
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+button,
+input,
+select,
+.panel,
+.day-card,
+.entry-row,
+.app-button {
+  transition:
+    background-color $theme-transition-duration ease,
+    background-image $theme-transition-duration ease,
+    border-color $theme-transition-duration ease,
+    box-shadow $theme-transition-duration ease,
+    color $theme-transition-duration ease,
+    fill $theme-transition-duration ease,
+    stroke $theme-transition-duration ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  button,
+  input,
+  select,
+  .panel,
+  .day-card,
+  .entry-row,
+  .app-button {
+    transition: none;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: $color-background;
+}
+
+#root {
+  background-image: $gradient-app-background;
+}
+
+h1,
+h2,
+h3 {
+  font-family: $font-display;
+  margin: 0;
+}
+
+code {
+  font-family: $font-mono;
+}

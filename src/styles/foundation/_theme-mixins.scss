@@ -1,0 +1,19 @@
+@use "./tokens" as *;
+
+@mixin focus-ring {
+  outline: none;
+  border-color: $color-pending-border;
+  box-shadow: 0 0 0 3px $color-focus-ring;
+}
+
+@mixin interactive-surface {
+  border: 1px solid $color-border-subtle;
+  background: $color-surface-muted;
+}
+
+@mixin glass-panel {
+  border: 1px solid $color-panel-border;
+  background: $color-panel-background;
+  backdrop-filter: blur(18px);
+  box-shadow: $shadow-panel;
+}

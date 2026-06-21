@@ -1,0 +1,38 @@
+@use "../foundation/tokens" as *;
+@use "../foundation/theme-mixins" as *;
+
+.today-summary {
+  @include glass-panel;
+  border-radius: 1rem;
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.today-summary-label {
+  font-size: 0.9rem;
+  color: $color-text-soft;
+}
+
+.today-summary-value {
+  font-family: $font-mono;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: $color-accent;
+}
+
+.today-summary-unit {
+  font-size: 0.9rem;
+  color: $color-text-soft;
+  margin-left: 0.3rem;
+}
+
+.today-summary-sep {
+  font-family: $font-mono;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: $color-text-soft;
+  margin: 0 0.4rem;
+}

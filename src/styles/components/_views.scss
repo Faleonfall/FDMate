@@ -1,0 +1,110 @@
+@use "../foundation/tokens" as *;
+@use "../foundation/theme-mixins" as *;
+
+.log-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.view-toggle {
+  display: inline-flex;
+  padding: 0.25rem;
+  border-radius: 0.7rem;
+  gap: 0.2rem;
+  @include interactive-surface;
+}
+
+.view-toggle-option {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: $color-text-soft;
+  font-weight: 600;
+  padding: 0.25rem 0.85rem;
+  border-radius: 0.5rem;
+
+  &[data-active="true"] {
+    color: $color-on-accent;
+    background-image: $gradient-accent;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.range-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  height: 2.4rem;
+  border-radius: 0.7rem;
+  overflow: hidden;
+  @include interactive-surface;
+}
+
+.range-nav-arrow {
+  font: inherit;
+  cursor: pointer;
+  width: 2.4rem;
+  flex: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  color: $color-text;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $color-surface-hover;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  .range-nav-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+}
+
+.range-nav-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-display;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: $color-text;
+  white-space: nowrap;
+}
+
+.range-nav-today {
+  font: inherit;
+  cursor: pointer;
+  font-weight: 600;
+  color: $color-accent;
+  padding: 0 0.9rem;
+  flex: none;
+  border: none;
+  background: transparent;
+  border-left: 1px solid $color-card-border;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    background: $color-surface-hover;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

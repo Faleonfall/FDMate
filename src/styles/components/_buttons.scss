@@ -1,0 +1,117 @@
+@use "../foundation/tokens" as *;
+@use "../foundation/theme-mixins" as *;
+
+.app-button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 0.7rem;
+  border: 1px solid transparent;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: $shadow-button-disabled;
+  }
+}
+
+.app-button--primary {
+  color: $color-on-accent;
+  background-image: $gradient-accent;
+  box-shadow: $shadow-button;
+
+  &:hover:not(:disabled) {
+    box-shadow: $shadow-button-hover;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: $shadow-button-active;
+  }
+}
+
+.app-button--ghost {
+  color: $color-text;
+  @include interactive-surface;
+
+  &:hover:not(:disabled) {
+    background: $color-surface-hover;
+  }
+}
+
+.app-button--danger {
+  color: $color-danger-text;
+  border-color: $color-error-border;
+  background: $color-error;
+}
+
+.icon-button {
+  font: inherit;
+  cursor: pointer;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text;
+  @include interactive-surface;
+
+  &:hover {
+    background: $color-surface-hover;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+}
+
+.fab {
+  position: fixed;
+  right: max(1.25rem, calc((100vw - 720px) / 2 + 1.25rem));
+  bottom: 1.5rem;
+  z-index: 30;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  color: $color-on-accent;
+  background-image: $gradient-accent;
+  box-shadow: $shadow-button;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  line-height: 1;
+
+  &:hover {
+    box-shadow: $shadow-button-hover;
+  }
+
+  &:active {
+    box-shadow: $shadow-button-active;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  .fab-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+}

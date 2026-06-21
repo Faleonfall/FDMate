@@ -1,0 +1,92 @@
+@use "../foundation/tokens" as *;
+
+.day-card {
+  border: 1px solid $color-card-border;
+  background-image: $gradient-card;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  &:hover {
+    box-shadow: $shadow-card-hover;
+  }
+}
+
+.day-card--today {
+  border-color: $color-accent-border-strong;
+  box-shadow: $shadow-accent-glow;
+}
+
+.day-card--empty {
+  opacity: 0.85;
+
+  .day-card-date {
+    color: $color-text-soft;
+  }
+}
+
+.day-card-empty-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: $color-text-soft;
+}
+
+.day-card-total.day-card-total--empty {
+  color: $color-text-soft;
+  font-weight: 400;
+}
+
+.month-empty-note {
+  margin: 0;
+  padding: 1.25rem;
+  text-align: center;
+  color: $color-text-soft;
+}
+
+.day-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.day-card-date {
+  font-family: $font-display;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.day-card-weekday {
+  font-size: 0.8rem;
+  color: $color-text-soft;
+  margin-left: 0.4rem;
+  font-weight: 400;
+}
+
+.day-card-total {
+  font-family: $font-mono;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-accent;
+  white-space: nowrap;
+}
+
+.day-card-total-unit {
+  font-family: $font-sans;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: $color-text-soft;
+  margin-left: 0.2rem;
+}
+
+.day-card-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

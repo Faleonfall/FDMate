@@ -1,0 +1,76 @@
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-background: #10151d;
+  --color-background-end: #16241d;
+  --color-text: #f4efe7;
+  --color-text-soft: #c7d2de;
+  --color-text-list: #dce4ee;
+  --color-accent: #7bd88f;
+  --color-accent-strong: #46b06a;
+  --color-on-accent: #0c1410;
+  --color-panel-background: rgba(11, 17, 24, 0.58);
+  --color-panel-border: rgba(255, 255, 255, 0.1);
+  --color-card-border: rgba(255, 255, 255, 0.08);
+  --color-card-background: rgba(255, 255, 255, 0.03);
+  --color-success: rgba(112, 224, 179, 0.08);
+  --color-success-border: rgba(112, 224, 179, 0.28);
+  --color-error: #3a2428;
+  --color-error-border: rgba(255, 124, 124, 0.3);
+  --color-pending: rgba(123, 216, 143, 0.09);
+  --color-pending-border: rgba(123, 216, 143, 0.28);
+  --color-panel-glow: rgba(123, 216, 143, 0.12);
+  --color-surface-subtle: rgba(255, 255, 255, 0.03);
+  --color-surface-muted: rgba(255, 255, 255, 0.04);
+  --color-surface-hover: rgba(255, 255, 255, 0.08);
+  --color-surface-overlay: #0f151e;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-divider: rgba(190, 235, 200, 0.28);
+  --color-danger-text: #ffb0b0;
+  --color-focus-ring: rgba(123, 216, 143, 0.16);
+  --color-accent-border-strong: rgba(123, 216, 143, 0.65);
+  --color-mask-solid: #000;
+  --color-accent-text-muted: color-mix(
+    in srgb,
+    var(--color-accent) 72%,
+    var(--color-text-soft) 28%
+  );
+  --gradient-app-background:
+    radial-gradient(
+      circle at top left,
+      rgba(123, 216, 143, 0.2),
+      transparent 24rem
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-background) 0%,
+      var(--color-background-end) 100%
+    );
+  --gradient-card:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.045),
+      rgba(255, 255, 255, 0.02)
+    ),
+    var(--color-card-background);
+  --gradient-accent: linear-gradient(
+    135deg,
+    var(--color-accent),
+    var(--color-accent-strong)
+  );
+  --gradient-popover:
+    radial-gradient(
+      circle at top right,
+      rgba(123, 216, 143, 0.1),
+      transparent 10rem
+    ),
+    rgba(24, 31, 43, 0.98);
+  --shadow-panel: 0 24px 80px rgba(0, 0, 0, 0.18);
+  --shadow-button: 0 14px 30px rgba(70, 176, 106, 0.24);
+  --shadow-button-hover: 0 18px 36px rgba(70, 176, 106, 0.32);
+  --shadow-button-active: 0 8px 18px rgba(70, 176, 106, 0.24);
+  --shadow-button-disabled: 0 10px 22px rgba(70, 176, 106, 0.16);
+  --shadow-card-hover: 0 18px 36px rgba(0, 0, 0, 0.2);
+  --shadow-accent-glow:
+    0 0 0 1px rgba(123, 216, 143, 0.22), 0 0 22px rgba(123, 216, 143, 0.16);
+}

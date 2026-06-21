@@ -1,0 +1,9 @@
+dist/
+build/
+out/
+coverage/
+.cache/
+tmp/
+temp/
+node_modules/
+*.tsbuildinfo

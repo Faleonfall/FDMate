@@ -1,0 +1,114 @@
+@use "../foundation/tokens" as *;
+@use "../foundation/theme-mixins" as *;
+
+.entry-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.6rem;
+  background: $color-surface-subtle;
+  border: 1px solid $color-border-subtle;
+}
+
+.entry-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.entry-row-title {
+  font-weight: 600;
+  color: $color-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entry-row-detail {
+  font-size: 0.78rem;
+  color: $color-text-soft;
+}
+
+.entry-row-calories {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-family: $font-mono;
+  font-weight: 700;
+  color: $color-text;
+  white-space: nowrap;
+}
+
+.entry-row-calories-unit {
+  font-family: $font-sans;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: $color-text-soft;
+}
+
+.entry-row-menu {
+  position: relative;
+  flex: none;
+}
+
+.entry-row-action {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: $color-text-soft;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  &:hover {
+    color: $color-text;
+    background: $color-surface-hover;
+  }
+}
+
+.entry-row-popover {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  z-index: 20;
+  min-width: 6.5rem;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 0.6rem;
+  @include glass-panel;
+  background-image: $gradient-popover;
+}
+
+.entry-row-option {
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: $color-text;
+  border-radius: 0.4rem;
+  padding: 0.3rem 0.55rem;
+
+  &:hover {
+    background: $color-surface-hover;
+  }
+
+  &--danger {
+    color: $color-danger-text;
+  }
+}

@@ -1,0 +1,118 @@
+@use "../foundation/tokens" as *;
+@use "../foundation/theme-mixins" as *;
+
+.data-menu {
+  position: relative;
+  align-self: flex-start;
+  width: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.data-menu-button {
+  padding: 0.35rem 1rem;
+  font-size: 0.95rem;
+}
+
+.data-menu-caret {
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.data-menu-popover {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  left: auto;
+  z-index: 25;
+  min-width: 12rem;
+  padding: 0.35rem;
+  border-radius: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  @include glass-panel;
+  background-image: $gradient-popover;
+}
+
+.data-menu-section {
+  margin: 0.35rem 0.55rem 0.15rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $color-text-soft;
+
+  &:first-child {
+    margin-top: 0.2rem;
+  }
+}
+
+.data-menu-option {
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: $color-text;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    background: $color-surface-hover;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.data-menu-file {
+  display: none;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $color-text;
+  @include glass-panel;
+  background-image: $gradient-popover;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  transform: translateX(-50%);
+  animation: toast-in 0.18s ease-out;
+
+  &[data-ok="false"] {
+    color: $color-danger-text;
+  }
+}
+
+.toast-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: $color-accent;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

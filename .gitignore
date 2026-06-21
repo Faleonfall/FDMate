@@ -1,0 +1,50 @@
+# ------------------------------
+# Dependencies
+# ------------------------------
+node_modules/
+
+# ------------------------------
+# Build output / caches
+# ------------------------------
+dist/
+build/
+out/
+tmp/
+temp/
+.cache/
+.eslintcache
+*.tsbuildinfo
+coverage/
+
+# ------------------------------
+# Logs
+# ------------------------------
+logs/
+*.log
+npm-debug.log*
+
+# ------------------------------
+# Tooling and IDE
+# ------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/
+CLAUDE.md
+
+# ------------------------------
+# Optional local overrides
+# ------------------------------
+*.local
+
+# Local env (Firebase web config; not secret but kept out of git)
+.env
+.env.local
+
+# Firebase emulator / CLI debug artifacts
+firebase-debug.log
+database-debug.log
+ui-debug.log
+*-debug.log
+.firebase/
