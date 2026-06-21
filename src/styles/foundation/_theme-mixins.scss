@@ -6,6 +6,14 @@
   box-shadow: 0 0 0 3px $color-focus-ring;
 }
 
+// Only apply hover styles on devices with a real hovering pointer, so touch
+// taps do not leave a sticky hover state stuck on the element after release.
+@mixin can-hover {
+  @media (hover: hover) {
+    @content;
+  }
+}
+
 @mixin interactive-surface {
   border: 1px solid $color-border-subtle;
   background: $color-surface-muted;

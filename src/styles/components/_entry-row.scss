@@ -72,9 +72,11 @@
     height: 1.25rem;
   }
 
-  &:hover {
-    color: $color-text;
-    background: $color-surface-hover;
+  @include can-hover {
+    &:hover {
+      color: $color-text;
+      background: $color-surface-hover;
+    }
   }
 }
 
@@ -104,8 +106,10 @@
   border-radius: 0.4rem;
   padding: 0.3rem 0.55rem;
 
-  &:hover {
-    background: $color-surface-hover;
+  @include can-hover {
+    &:hover {
+      background: $color-surface-hover;
+    }
   }
 
   &--danger {

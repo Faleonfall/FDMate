@@ -11,6 +11,7 @@
   align-items: center;
   justify-content: center;
   padding: 1.25rem;
+  overscroll-behavior: contain;
 
   @include phone-down {
     align-items: flex-end;
@@ -27,6 +28,8 @@
   max-height: calc(100dvh - 2.5rem);
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -81,6 +84,8 @@
   padding: 0.55rem 0.7rem;
   width: 100%;
   min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   @include interactive-surface;
 
   &:focus {
@@ -90,6 +95,23 @@
   &::placeholder {
     color: $color-text-soft;
     opacity: 0.55;
+  }
+
+  // iOS Safari gives date inputs an intrinsic min width and ignores
+  // width:100% unless the native appearance is removed, so the field
+  // overflows the screen. Strip the appearance and pin the value layout.
+  &[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+
+    &::-webkit-date-and-time-value {
+      text-align: left;
+      margin: 0;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      margin: 0;
+    }
   }
 
   &[type="number"] {

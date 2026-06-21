@@ -169,6 +169,37 @@ export function AddEntryForm({
     };
   }, [mode, reduceMotion]);
 
+  // Lock body scroll while the modal is open. position:fixed is the reliable
+  // way to stop iOS Safari from scrolling the page behind the popover; restore
+  // the scroll position on close.
+  useEffect(() => {
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
+  // Clear the validation error as soon as the user edits anything, so a
+  // message like "Enter a name." disappears once they start fixing it.
+  useEffect(() => {
+    setError(null);
+  }, [title, date, mode, calories, per100g, grams]);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {

@@ -1,4 +1,5 @@
 @use "../foundation/tokens" as *;
+@use "../foundation/theme-mixins" as *;
 
 .day-card {
   border: 1px solid $color-card-border;
@@ -9,8 +10,10 @@
   flex-direction: column;
   gap: 0.6rem;
 
-  &:hover {
-    box-shadow: $shadow-card-hover;
+  @include can-hover {
+    &:hover {
+      box-shadow: $shadow-card-hover;
+    }
   }
 }
 

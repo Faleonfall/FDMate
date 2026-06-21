@@ -46,9 +46,11 @@
     font-weight: 600;
   }
 
-  &[data-has-entries="true"]:hover {
-    background: $color-surface-hover;
-    box-shadow: $shadow-accent-glow;
+  @include can-hover {
+    &[data-has-entries="true"]:hover {
+      background: $color-surface-hover;
+      box-shadow: $shadow-accent-glow;
+    }
   }
 
   &:disabled {
