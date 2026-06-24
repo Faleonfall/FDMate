@@ -7,6 +7,10 @@ total. Days are browsable by day, week, and month.
 Single-page React app. Data lives in Firebase Realtime Database (per-user JSON
 blob), with `localStorage` as an offline cache. Google sign-in gates the app.
 
+<p align="center">
+  <img src="docs/screenshot.png" alt="FDMate day view" width="720" />
+</p>
+
 ## Stack
 
 - React 19 + Vite (single app at repo root)
