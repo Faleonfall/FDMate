@@ -33,15 +33,14 @@ popup). The RTDB emulator needs JDK 21+.
 
 ## Scripts
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Emulators + dev server |
-| `npm run build` | Typecheck + production build → `dist/` |
-| `npm run typecheck` | TypeScript check |
-| `npm run lint` | ESLint |
-| `npm test` | Vitest |
-| `npm run preview` | Build, then serve the bundle |
-| `npm run emu` | Firebase emulators only |
+| Command             | Description                            |
+| ------------------- | -------------------------------------- |
+| `npm run dev`       | Emulators + dev server                 |
+| `npm run build`     | Typecheck + production build → `dist/` |
+| `npm run typecheck` | TypeScript check                       |
+| `npm run lint`      | ESLint                                 |
+| `npm test`          | Vitest                                 |
+| `npm run emu`       | Firebase emulators only                |
 
 ## Layout
 
