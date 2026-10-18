@@ -53,7 +53,7 @@ export function useLiquidMorph(target: number) {
       element.style.setProperty("--p", String(value));
       element.style.setProperty("--wob", "0");
       blurRef.current?.setAttribute("stdDeviation", "0");
-      element.classList.remove("is-morphing");
+      element.classList.remove("liquid-fields--morphing");
     }
 
     if (reduceMotion) {
@@ -64,7 +64,7 @@ export function useLiquidMorph(target: number) {
 
     const start = performance.now();
     let last = start;
-    el.classList.add("is-morphing");
+    el.classList.add("liquid-fields--morphing");
 
     const tick = (now: number) => {
       const spring = springRef.current;
@@ -107,7 +107,7 @@ export function useLiquidMorph(target: number) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
-      el.classList.remove("is-morphing");
+      el.classList.remove("liquid-fields--morphing");
     };
   }, [target, reduceMotion]);
 

@@ -20,7 +20,7 @@ export function AppHeader({
         </div>
         <div className="hero-actions">
           <button
-            className="icon-button"
+            className="button-icon"
             type="button"
             onClick={onCycleThemePreference}
             aria-label={`Theme: ${themePreference}`}
@@ -30,7 +30,7 @@ export function AppHeader({
           </button>
           {onSignOut ? (
             <button
-              className="icon-button"
+              className="button-icon"
               type="button"
               onClick={onSignOut}
               aria-label="Sign out"

@@ -20,8 +20,6 @@ export default defineConfig({
     allowedHosts: [".trycloudflare.com", ".ngrok-free.app", ".ngrok.app"],
   },
   build: {
-    outDir: "dist",
-    emptyOutDir: true,
     chunkSizeWarningLimit: 750,
     rollupOptions: {
       output: {

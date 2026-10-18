@@ -10,7 +10,7 @@ export function SignInScreen({ onSignIn }: SignInScreenProps) {
           FD
         </div>
         <button
-          className="app-button app-button--primary"
+          className="button button--primary"
           type="button"
           onClick={onSignIn}
         >

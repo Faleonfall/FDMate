@@ -68,7 +68,7 @@ export function WeekView({
 
   return (
     <>
-      <div className="day-list">
+      <div className="log-list">
         {days.map((date) => (
           <DayRow
             key={date}
@@ -105,7 +105,7 @@ export function MonthView({
         onSelectDay={onSelectDay}
       />
       {loggedDays.length > 0 ? (
-        <div className="day-list">
+        <div className="log-list">
           {loggedDays.map((date) => (
             <DayRow
               key={date}
@@ -116,7 +116,7 @@ export function MonthView({
           ))}
         </div>
       ) : (
-        <p className="month-empty-note">No food logged this month.</p>
+        <p className="log-empty-note">No food logged this month.</p>
       )}
     </>
   );

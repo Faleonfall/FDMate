@@ -4,6 +4,7 @@ import { useEntryForm } from "../../hooks/diary/useEntryForm";
 import { useEscapeKey } from "../../hooks/app/useEscapeKey";
 import { useLiquidMorph } from "../../hooks/diary/useLiquidMorph";
 import { useScrollLock } from "../../hooks/app/useScrollLock";
+import { entryFormLabels } from "../../lib/diary/display";
 import type { EntryDraft, FoodEntry } from "../../lib/diary/types";
 import { CloseIcon } from "../app/AppIcons";
 
@@ -31,6 +32,7 @@ export function AddEntryForm({
   );
   useScrollLock();
   useEscapeKey(onClose);
+  const labels = entryFormLabels(Boolean(editing));
 
   return (
     <div className="modal-backdrop" onClick={onClose} role="presentation">
@@ -38,15 +40,13 @@ export function AddEntryForm({
         className="modal"
         role="dialog"
         aria-modal="true"
-        aria-label={editing ? "Edit entry" : "Add entry"}
+        aria-label={labels.title}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="modal-header">
-          <h2 className="modal-title">
-            {editing ? "Edit entry" : "Add entry"}
-          </h2>
+          <h2 className="modal-title">{labels.title}</h2>
           <button
-            className="icon-button"
+            className="button-icon"
             type="button"
             onClick={onClose}
             aria-label="Close"
@@ -56,13 +56,13 @@ export function AddEntryForm({
         </div>
 
         <form className="entry-form" onSubmit={handleSubmit}>
-          <div className="field">
-            <label className="field-label" htmlFor="entry-title">
+          <div className="entry-form-field">
+            <label className="entry-form-label" htmlFor="entry-title">
               Name
             </label>
             <input
               id="entry-title"
-              className="field-input"
+              className="entry-form-input"
               placeholder="Banana"
               value={fields.title}
               onChange={(event) => setField("title", event.target.value)}
@@ -70,23 +70,23 @@ export function AddEntryForm({
             />
           </div>
 
-          <div className="field">
-            <label className="field-label" htmlFor="entry-date">
+          <div className="entry-form-field">
+            <label className="entry-form-label" htmlFor="entry-date">
               Date
             </label>
             <input
               id="entry-date"
-              className="field-input"
+              className="entry-form-input"
               type="date"
               value={fields.date}
               onChange={(event) => setField("date", event.target.value)}
             />
           </div>
 
-          <div className="field">
-            <span className="field-label">Calorie input</span>
+          <div className="entry-form-field">
+            <span className="entry-form-label">Calorie input</span>
             <div
-              className="mode-toggle"
+              className="entry-form-mode"
               role="group"
               style={
                 {
@@ -96,7 +96,7 @@ export function AddEntryForm({
             >
               <button
                 type="button"
-                className="mode-toggle-option"
+                className="entry-form-mode-option"
                 data-active={fields.mode === "per100g"}
                 onClick={() => setField("mode", "per100g")}
               >
@@ -104,7 +104,7 @@ export function AddEntryForm({
               </button>
               <button
                 type="button"
-                className="mode-toggle-option"
+                className="entry-form-mode-option"
                 data-active={fields.mode === "total"}
                 onClick={() => setField("mode", "total")}
               >
@@ -147,17 +147,17 @@ export function AddEntryForm({
             </svg>
 
             <div className="liquid-body" aria-hidden="true">
-              <span className="blob blob-a" />
-              <span className="blob blob-b" />
+              <span className="liquid-blob liquid-blob-a" />
+              <span className="liquid-blob liquid-blob-b" />
             </div>
 
             <div className="liquid-field liquid-field--calories">
-              <label className="field-label" htmlFor="entry-calories">
+              <label className="entry-form-label" htmlFor="entry-calories">
                 Calories eaten (kcal)
               </label>
               <input
                 id="entry-calories"
-                className="field-input"
+                className="entry-form-input"
                 type="text"
                 inputMode="text"
                 placeholder="0"
@@ -169,12 +169,12 @@ export function AddEntryForm({
             </div>
 
             <div className="liquid-field liquid-field--per100g">
-              <label className="field-label" htmlFor="entry-per100g">
+              <label className="entry-form-label" htmlFor="entry-per100g">
                 kcal / 100 g
               </label>
               <input
                 id="entry-per100g"
-                className="field-input"
+                className="entry-form-input"
                 type="number"
                 inputMode="numeric"
                 min="0"
@@ -187,12 +187,12 @@ export function AddEntryForm({
             </div>
 
             <div className="liquid-field liquid-field--grams">
-              <label className="field-label" htmlFor="entry-grams">
+              <label className="entry-form-label" htmlFor="entry-grams">
                 Grams eaten
               </label>
               <input
                 id="entry-grams"
-                className="field-input"
+                className="entry-form-input"
                 type="number"
                 inputMode="numeric"
                 min="0"
@@ -210,13 +210,13 @@ export function AddEntryForm({
           <div className="entry-form-actions">
             <button
               type="button"
-              className="app-button app-button--ghost"
+              className="button button--ghost"
               onClick={onClose}
             >
               Cancel
             </button>
-            <button type="submit" className="app-button app-button--primary">
-              {editing ? "Save" : "Add entry"}
+            <button type="submit" className="button button--primary">
+              {labels.submit}
             </button>
           </div>
         </form>

@@ -1,0 +1,43 @@
+@use "../tokens" as *;
+@use "../mixins" as *;
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $color-text;
+  @include glass-panel;
+  background-image: $gradient-popover;
+  box-shadow: $shadow-popover;
+  transform: translateX(-50%);
+  animation: toast-in 0.18s ease-out;
+
+  &[data-ok="false"] {
+    color: $color-danger-text;
+  }
+}
+
+.toast-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: $color-accent;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

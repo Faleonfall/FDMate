@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { useDisclosure } from "../../hooks/app/useDisclosure";
 import { dayTotalCalories } from "../../lib/diary/calories";
 import {
   formatLongDate,
@@ -17,7 +16,7 @@ type DayRowProps = {
 };
 
 export function DayRow({ day, onEditEntry, onDeleteEntry }: DayRowProps) {
-  const [open, setOpen] = useState(false);
+  const { open, toggle } = useDisclosure();
   const total = dayTotalCalories(day.entries);
   const today = isToday(day.date);
   const hasEntries = day.entries.length > 0;
@@ -46,7 +45,7 @@ export function DayRow({ day, onEditEntry, onDeleteEntry }: DayRowProps) {
         <button
           className="day-row-header"
           type="button"
-          onClick={() => setOpen((current) => !current)}
+          onClick={toggle}
           aria-expanded={open}
         >
           {header}

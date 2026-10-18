@@ -32,36 +32,6 @@ export function CloseIcon({ className }: IconProps) {
   );
 }
 
-export function TrashIcon({ className }: IconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-13"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-export function EditIcon({ className }: IconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M4 20h4l10-10a2 2 0 0 0-2.83-2.83L5 17.5 4 20zM13.5 6.5l4 4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function LogoutIcon({ className }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
@@ -125,36 +95,6 @@ export function ChevronRightIcon({ className }: IconProps) {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-export function DownloadIcon({ className }: IconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-export function UploadIcon({ className }: IconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 21V9m0 0 4 4m-4-4-4 4M5 5h14"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

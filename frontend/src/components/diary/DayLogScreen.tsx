@@ -64,13 +64,13 @@ export function DayLogScreen({ uid }: { uid: string }) {
       )}
 
       <button
-        className="fab"
+        className="button-fab"
         type="button"
         onClick={screen.openAddForm}
         aria-label="Add entry"
         title="Add entry"
       >
-        <PlusIcon className="fab-icon" />
+        <PlusIcon className="button-fab-icon" />
       </button>
 
       {form ? (

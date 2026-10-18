@@ -1,10 +1,10 @@
 #!/bin/sh
 set -e
 
-staged_files="$(mktemp)"
-staged_deletions="$(mktemp)"
 # Format and re-stage only what is already staged, so partial commits survive.
 # Never `git add -A`, which would silently swallow unstaged work.
+staged_files="$(mktemp)"
+staged_deletions="$(mktemp)"
 trap 'rm -f "$staged_files" "$staged_deletions"' EXIT
 
 git diff --cached --name-only -z --diff-filter=d > "$staged_files"

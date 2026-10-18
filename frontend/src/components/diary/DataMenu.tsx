@@ -14,7 +14,7 @@ export function DataMenu({ log, onImport }: DataMenuProps) {
   return (
     <div className="data-menu" ref={menu.menuRef}>
       <button
-        className="app-button app-button--ghost data-menu-button"
+        className="button button--ghost data-menu-button"
         type="button"
         onClick={(event) => {
           event.stopPropagation();

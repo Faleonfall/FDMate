@@ -46,8 +46,6 @@ export default [
       "dist/",
       "build/",
       "coverage/",
-      "tmp/",
-      "temp/",
     ],
   },
   {

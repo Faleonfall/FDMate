@@ -1,7 +1,7 @@
 @use "../tokens" as *;
 @use "../mixins" as *;
 
-.app-button {
+.button {
   font: inherit;
   cursor: pointer;
   border-radius: 0.6rem;
@@ -24,7 +24,7 @@
   }
 }
 
-.app-button--primary {
+.button--primary {
   color: $color-on-accent;
   background-image: $gradient-accent;
   box-shadow: $shadow-button;
@@ -41,7 +41,7 @@
   }
 }
 
-.app-button--ghost {
+.button--ghost {
   color: $color-text;
   @include interactive-surface;
 
@@ -52,7 +52,7 @@
   }
 }
 
-.icon-button {
+.button-icon {
   font: inherit;
   cursor: pointer;
   width: 2.4rem;
@@ -80,7 +80,7 @@
   }
 }
 
-.fab {
+.button-fab {
   position: fixed;
   right: max(1.25rem, calc((100vw - 720px) / 2 + 1.25rem));
   bottom: 1.5rem;
@@ -118,7 +118,7 @@
     @include focus-ring;
   }
 
-  .fab-icon {
+  .button-fab-icon {
     width: 1.6rem;
     height: 1.6rem;
   }

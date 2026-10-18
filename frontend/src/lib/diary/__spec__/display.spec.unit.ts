@@ -4,6 +4,7 @@ import {
   calendarDays,
   dayCardClassName,
   entryDetail,
+  entryFormLabels,
   importedDaysText,
   rangeLabel,
   summaryLabel,
@@ -59,6 +60,17 @@ describe("display", () => {
   it("pluralizes the import toast", () => {
     expect(importedDaysText(1)).toBe("Imported 1 day");
     expect(importedDaysText(3)).toBe("Imported 3 days");
+  });
+
+  it("labels the entry form for adding or editing", () => {
+    expect(entryFormLabels(false)).toEqual({
+      title: "Add entry",
+      submit: "Add entry",
+    });
+    expect(entryFormLabels(true)).toEqual({
+      title: "Edit entry",
+      submit: "Save",
+    });
   });
 
   it("builds day card class names", () => {

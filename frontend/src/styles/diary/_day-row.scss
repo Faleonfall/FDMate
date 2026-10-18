@@ -1,11 +1,5 @@
 @use "../tokens" as *;
 
-.day-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .day-row {
   border: 1px solid $color-card-border;
   background-image: $gradient-card;

@@ -20,7 +20,7 @@ input,
 select,
 .day-card,
 .entry-row,
-.app-button {
+.button {
   transition:
     background-color $theme-transition-duration ease,
     background-image $theme-transition-duration ease,
@@ -38,7 +38,7 @@ select,
   select,
   .day-card,
   .entry-row,
-  .app-button {
+  .button {
     transition: none;
   }
 }

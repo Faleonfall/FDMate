@@ -57,6 +57,12 @@ export function summaryLabel(mode: ViewMode): string {
   return mode === "weekly" ? "Today / Weekly avg" : "Today";
 }
 
+export function entryFormLabels(editing: boolean) {
+  return editing
+    ? { title: "Edit entry", submit: "Save" }
+    : { title: "Add entry", submit: "Add entry" };
+}
+
 export function importedDaysText(dayCount: number): string {
   return `Imported ${dayCount} day${dayCount === 1 ? "" : "s"}`;
 }

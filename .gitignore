@@ -41,6 +41,7 @@ CLAUDE.md
 # Local env (Firebase web config; not secret but kept out of git)
 .env
 .env.local
+!.env.example
 
 # Firebase emulator / CLI debug artifacts
 firebase-debug.log

@@ -32,6 +32,22 @@ export function writeJsonStorage(
   }
 }
 
+export function readStorageItem(storage: Storage, key: string) {
+  try {
+    return storage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function writeStorageItem(storage: Storage, key: string, value: string) {
+  try {
+    storage.setItem(key, value);
+  } catch {
+    // Persistence is best-effort; callers should keep working from memory.
+  }
+}
+
 export function removeStorageItem(storage: Storage, key: string) {
   try {
     storage.removeItem(key);

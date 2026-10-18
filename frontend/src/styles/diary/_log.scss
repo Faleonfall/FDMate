@@ -1,0 +1,22 @@
+@use "../tokens" as *;
+
+.log-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.log-empty-note {
+  margin: 0;
+  padding: 1.25rem;
+  text-align: center;
+  color: $color-text-soft;
+}

@@ -3,8 +3,10 @@ import { describe, expect, it } from "vitest";
 import {
   isStorageRecord,
   readJsonStorage,
+  readStorageItem,
   removeStorageItem,
   writeJsonStorage,
+  writeStorageItem,
 } from "../storageCache";
 import { createFailingStorage, createMemoryStorage } from "./storageHelpers";
 
@@ -27,7 +29,18 @@ describe("storageCache", () => {
     const storage = createFailingStorage();
     expect(readJsonStorage(storage, "key", 7)).toBe(7);
     expect(() => writeJsonStorage(storage, "key", 1)).not.toThrow();
+    expect(readStorageItem(storage, "key")).toBeNull();
+    expect(() => writeStorageItem(storage, "key", "value")).not.toThrow();
     expect(() => removeStorageItem(storage, "key")).not.toThrow();
+  });
+
+  it("reads, writes and removes plain string values", () => {
+    const storage = createMemoryStorage();
+    writeStorageItem(storage, "key", "light");
+    expect(readStorageItem(storage, "key")).toBe("light");
+
+    removeStorageItem(storage, "key");
+    expect(readStorageItem(storage, "key")).toBeNull();
   });
 
   it("treats only plain objects as records", () => {

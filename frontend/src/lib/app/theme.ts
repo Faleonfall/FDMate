@@ -1,3 +1,10 @@
+import {
+  getLocalStorage,
+  readStorageItem,
+  removeStorageItem,
+  writeStorageItem,
+} from "./storageCache";
+
 export type ThemePreference = "system" | "light" | "dark";
 export type ThemeScheme = "light" | "dark";
 
@@ -7,36 +14,6 @@ const themePreferences: ThemePreference[] = ["system", "light", "dark"];
 
 function isThemePreference(value: string | null): value is ThemePreference {
   return value !== null && themePreferences.includes(value as ThemePreference);
-}
-
-function readThemePreference(): string | null {
-  try {
-    return window.localStorage.getItem(THEME_STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function writeThemePreference(preference: ThemePreference) {
-  try {
-    if (preference === "system") {
-      window.localStorage.removeItem(THEME_STORAGE_KEY);
-      return;
-    }
-
-    window.localStorage.setItem(THEME_STORAGE_KEY, preference);
-  } catch {
-    return;
-  }
-}
-
-function getStoredThemePreference(): ThemePreference {
-  if (typeof window === "undefined") {
-    return "system";
-  }
-
-  const storedPreference = readThemePreference();
-  return isThemePreference(storedPreference) ? storedPreference : "system";
 }
 
 export function getSystemThemeScheme(): ThemeScheme {
@@ -50,7 +27,9 @@ export function getSystemThemeScheme(): ThemeScheme {
 }
 
 export function getInitialThemePreference(): ThemePreference {
-  return getStoredThemePreference();
+  const storage = getLocalStorage();
+  const stored = storage ? readStorageItem(storage, THEME_STORAGE_KEY) : null;
+  return isThemePreference(stored) ? stored : "system";
 }
 
 export function getNextThemePreference(
@@ -60,12 +39,19 @@ export function getNextThemePreference(
   return themePreferences[(index + 1) % themePreferences.length] ?? "system";
 }
 
+// System is the default, so it is stored as no value at all.
 export function persistThemePreference(preference: ThemePreference) {
-  if (typeof window === "undefined") {
+  const storage = getLocalStorage();
+  if (!storage) {
     return;
   }
 
-  writeThemePreference(preference);
+  if (preference === "system") {
+    removeStorageItem(storage, THEME_STORAGE_KEY);
+    return;
+  }
+
+  writeStorageItem(storage, THEME_STORAGE_KEY, preference);
 }
 
 export function applyTheme(preference: ThemePreference, scheme: ThemeScheme) {

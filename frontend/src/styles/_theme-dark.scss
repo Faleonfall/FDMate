@@ -28,6 +28,7 @@
   --color-focus-ring: rgba(123, 216, 143, 0.16);
   --color-accent-border-strong: rgba(123, 216, 143, 0.65);
   --color-mask-solid: #000;
+  --color-backdrop: rgba(0, 0, 0, 0.45);
   --gradient-app-background:
     radial-gradient(
       circle at top left,
@@ -64,6 +65,7 @@
   --shadow-button-active: 0 8px 18px rgba(70, 176, 106, 0.24);
   --shadow-button-disabled: 0 10px 22px rgba(70, 176, 106, 0.16);
   --shadow-card-hover: 0 18px 36px rgba(0, 0, 0, 0.2);
+  --shadow-popover: 0 12px 28px rgba(0, 0, 0, 0.18);
   --shadow-accent-glow:
     0 0 0 1px rgba(123, 216, 143, 0.22), 0 0 22px rgba(123, 216, 143, 0.16);
 }
