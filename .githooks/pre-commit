@@ -3,6 +3,8 @@ set -e
 
 staged_files="$(mktemp)"
 staged_deletions="$(mktemp)"
+# Format and re-stage only what is already staged, so partial commits survive.
+# Never `git add -A`, which would silently swallow unstaged work.
 trap 'rm -f "$staged_files" "$staged_deletions"' EXIT
 
 git diff --cached --name-only -z --diff-filter=d > "$staged_files"
@@ -12,8 +14,9 @@ if [ -s "$staged_files" ]; then
   xargs -0 npx prettier --write --ignore-unknown -- < "$staged_files"
 fi
 
-npm run lint
-npm run typecheck
+# Typecheck and lint together: eslint cannot see an unresolved import or a
+# broken type, and tsc cannot see a lint rule, so each covers the other.
+npm run check
 
 if [ -s "$staged_files" ]; then
   xargs -0 git add -- < "$staged_files"

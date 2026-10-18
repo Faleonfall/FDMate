@@ -7,3 +7,8 @@ tmp/
 temp/
 node_modules/
 *.tsbuildinfo
+.env
+.env.local
+*.local
+*.log
+.firebase/
